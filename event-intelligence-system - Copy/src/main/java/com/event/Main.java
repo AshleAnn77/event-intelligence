@@ -11,22 +11,33 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println("Fetching events...\n");
+        try {
+            System.out.println("Fetching events...\n");
 
-        // Step 1: Fetch events
-        EventFetcher fetcher = new EventFetcher();
-        List<Event> events = fetcher.fetchAllEvents();
+            // Step 1: Fetch events
+            EventFetcher fetcher = new EventFetcher();
+            List<Event> events = fetcher.fetchAllEvents();
 
-        // Step 2: Remove duplicates
-        DuplicateRemover remover = new DuplicateRemover();
-        events = remover.removeDuplicates(events);
+            if (events == null || events.isEmpty()) {
+                System.out.println("No events fetched. Exiting...");
+                return;
+            }
 
-        System.out.println("After removing duplicates: " + events.size());
+            // Step 2: Remove duplicates
+            DuplicateRemover remover = new DuplicateRemover();
+            events = remover.removeDuplicates(events);
 
-        // Step 3: Save to database
-        EventRepository repo = new EventRepository();
-        repo.saveEvents(events);
+            System.out.println("After removing duplicates: " + events.size());
 
-        System.out.println("✅ Events saved to database!");
+            // Step 3: Save to database
+            EventRepository repo = new EventRepository();
+            repo.saveEvents(events);
+
+            System.out.println("✅ Events saved to Railway database!");
+
+        } catch (Exception e) {
+            System.out.println("❌ Something went wrong:");
+            e.printStackTrace();
+        }
     }
 }
